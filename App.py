@@ -11,7 +11,6 @@ client = AzureOpenAI(
     api_key=os.environ['OPENAI_API_KEY'],
     api_version=os.environ['OPENAI_API_VERSION']
 )
-p_type = 0
 
 ## page layout ##
 st.set_page_config(
@@ -34,12 +33,15 @@ with st.sidebar:
                             }, key='menu')
     ai_mess = st.chat_message("human")
     ai_mess.write(f"보험 {choice} 도우미")
+    if "AItype" not in st.session_state:
+        st.session_state["AItype"] = choice
+    if st.session_state["AItype"] != choice:
+        st.session_state.messages.append({"role":"system","content": AIConfig.types[choice]})
 
-    st.session_state.messages = []
     st.markdown("[![SKcc](https://www.skcc.co.kr/img/Image_Resource.SK_SVG.svg?0CBb3gEwrwAJW+94rlh_8Q)](https://www.skcc.co.kr/)")
 
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role":"system","content": AIConfig.types[choice]}]
+    st.session_state.messages = []
 
 for msg in st.session_state.messages:
     if msg["role"] != "system":
