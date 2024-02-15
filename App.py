@@ -1,10 +1,16 @@
-import AIConfig
+import os
 import streamlit as st
 from streamlit_option_menu import option_menu
+from openai import AzureOpenAI
+import AIConfig
 
 ## bot config ##
-st.session_state["openai_model"] = AIConfig.model
-client = AIConfig.client
+st.session_state["openai_model"] = os.environ['OPENAI_MODEL']
+client = AzureOpenAI(
+    azure_endpoint=os.environ['OPENAI_API_URI'],
+    api_key=os.environ['OPENAI_API_KEY'],
+    api_version=os.environ['OPENAI_API_VERSION']
+)
 p_type = 0
 
 ## page layout ##
