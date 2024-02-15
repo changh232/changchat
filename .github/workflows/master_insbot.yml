@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'insbot'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D11F4F878A144EC48FB5DB82720C36A8 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9CFB5B9023FA4C4581F40013245CD23F }}
