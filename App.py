@@ -38,36 +38,20 @@ with st.sidebar:
     st.session_state.messages = [{"role":"system","content": AIConfig.types[choice]}]
     st.markdown("[![SKcc](https://www.skcc.co.kr/img/Image_Resource.SK_SVG.svg?0CBb3gEwrwAJW+94rlh_8Q)](https://www.skcc.co.kr/)")
 
-
-# Initialize chat history
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    st.session_state.messages = [{"role":"system","content": "say yes only"}]
 
-# Display chat messages from history on app rerun
-for message in st.session_state.messages:
-    if message["role"] != "system":
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+for msg in st.session_state.messages:
+    if msg["role"] != "system":
+        st.chat_message(msg["role"]).write(msg["content"])
 
-# Accept user input
 if prompt := st.chat_input("Ask your question"):
-    # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
-    # Display user message 
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    st.chat_message("user").write(prompt)
     
-    # Display assistant response
-    with st.chat_message("assistant"):
-        # for m in st.session_state.messages:
-        stream = client.chat.completions.create(
-            model=st.session_state["openai_model"],
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
-        response = st.write_stream(stream)
-    st.session_state.messages.append({"role": "assistant", "content": response})
-print(st.session_state.messages)
+    response = client.chat.completions.create(
+        model=st.session_state["openai_model"], messages=st.session_state.messages
+    )
+    msg = response.choices[0].message.content
+    st.session_state.messages.append({"role": "assistant", "content": msg})
+    st.chat_message("assistant").write(msg)
